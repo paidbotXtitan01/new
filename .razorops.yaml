@@ -1,7 +1,7 @@
 version: v2
 global:
   runner:
-    os_image: ubuntu
+    docker_image: python:3.10-slim  # Use a lightweight Python 3.10 Docker image
   variables:
   - CGO_ENABLED=0
   - GOOS=linux
@@ -13,12 +13,8 @@ tasks:
   setup:
     steps:
     - commands:
-      - pyenv install 3.10.5  # Install Python 3.10.5
-      - pyenv global 3.10.5   # Set Python 3.10.5 as the global version
-      - python --version      # Verify Python version
+      - python --version  # Verify Python version
       - pip install telebot flask pymongo aiohttp python-telegram-bot  # Install dependencies
-
-    - commands:
       - git clone https://github.com/paidbotXtitan01/new.git  # Clone your GitHub repo
       - cd new  # Change to the cloned directory
       - chmod +x main.py  # Make the script executable
