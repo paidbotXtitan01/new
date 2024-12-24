@@ -1,9 +1,8 @@
-# spec version (v1/v2)
 version: v2
-global: 
+global:
   runner:
-    os_image: ubuntu # Use Ubuntu Linux as the OS
-  variables: 
+    os_image: ubuntu
+  variables:
   - CGO_ENABLED=0
   - GOOS=linux
   - GOARCH=amd64
@@ -14,9 +13,11 @@ tasks:
   setup:
     steps:
     - commands:
-      - pyenv global 3.10.5  # set Python version
-      - python --version  # verify version
-      - pip install telebot flask pymongo aiohttp python-telegram-bot
-      - chmod +x xxxx
-      - python titan.py
-
+      - pyenv install --list  # List all available Python versions
+      - pyenv install 3.10.5  # Install Python 3.10.5
+      - pyenv global 3.10.5   # Set Python 3.10.5 as the global version
+      - python --version      # Verify the Python version
+    - run: pip install telebot flask pymongo aiohttp python-telegram-bot  # Install dependencies
+    - commands:
+      - chmod +x xxxx  # Set execute permission
+      - python titan.py  # Run the Python script
