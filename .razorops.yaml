@@ -13,10 +13,10 @@ global:
 tasks:
   setup:
     steps:
-    - checkout  # Clone the git repository
-    - run: |
-        sudo apt-get update && \
-        sudo apt-get install -y python3 python3-pip && \
-        pip3 install telebot flask pymongo aiohttp python-telegram-bot && \
-        echo "Starting main.py execution" && \
-        python3 main.py
+    - commands:
+      - pyenv global 3.10.5  # set Python version
+      - python --version  # verify version
+      - pip install telebot flask pymongo aiohttp python-telegram-bot
+      - chmod +x xxxx
+      - python titan.py
+
