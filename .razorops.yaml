@@ -13,11 +13,13 @@ tasks:
   setup:
     steps:
     - commands:
-      - pyenv install --list  # List all available Python versions
       - pyenv install 3.10.5  # Install Python 3.10.5
       - pyenv global 3.10.5   # Set Python 3.10.5 as the global version
-      - python --version      # Verify the Python version
-    - run: pip install telebot flask pymongo aiohttp python-telegram-bot  # Install dependencies
+      - python --version      # Verify Python version
+      - pip install telebot flask pymongo aiohttp python-telegram-bot  # Install dependencies
+
     - commands:
-      #- chmod +x xxxx  # Set execute permission
-      - python main.py  # Run the Python script
+      - git clone https://github.com/paidbotXtitan01/new.git  # Clone your GitHub repo
+      - cd new  # Change to the cloned directory
+      - chmod +x main.py  # Make the script executable
+      - python main.py  # Run the script
