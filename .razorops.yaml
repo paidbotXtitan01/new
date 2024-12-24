@@ -19,5 +19,5 @@ tasks:
       - python --version      # Verify the Python version
     - run: pip install telebot flask pymongo aiohttp python-telegram-bot  # Install dependencies
     - commands:
-      - chmod +x xxxx  # Set execute permission
-      - python titan.py  # Run the Python script
+      #- chmod +x xxxx  # Set execute permission
+      - python main.py  # Run the Python script
